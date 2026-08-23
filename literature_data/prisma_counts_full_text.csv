@@ -1,0 +1,8 @@
+﻿Stage,Metric,Count,Notes
+Eligibility,Full-text reports sought,64,47 Include + 17 Maybe records after title/abstract screening.
+Eligibility,Full-text reports retrieved,64,All PDFs were manually downloaded into the literature folder.
+Eligibility,Full-text reports assessed for eligibility,64,All 64 PDFs were text-extracted and matched to Candidate_ID.
+Eligibility,Reports excluded after full-text screening,0,"Excluded for weak combined evidence on AI/RUL output, DT role, maintenance decision output and system/risk metric."
+Included,Core evidence studies,28,Used for detailed synthesis against the refined RQ.
+Included,Supporting method evidence studies,20,Useful for AI/RUL or DT method background.
+Included,Background/review evidence studies,16,Useful for literature review framing and research gap discussion.

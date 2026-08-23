@@ -1,0 +1,6 @@
+asset_id,asset_role,criticality,capacity_loss_percent,throughput,severity,assignment_seed,assignment_design,source_cmapss_unit_id,source_true_endpoint_rul_diagnostic_only,surrogate_rul_input,surrogate_rul_quantile,rul_urgency,combined_consequence,priority_score,priority_rank,rul_only_score,rul_only_rank,criticality_only_score,criticality_only_rank
+A1,Inbound conveyor motor,4,40,3,3,42,quintile_stratified,24,20,32.316305129135706,Q1_shortest_0_20pct,0.7414695589669144,0.6666666666666667,49.43130393112763,1,74.14695589669144,1,80.0,2
+A4,AGV/shuttle drive unit,2,15,2,2,42,quintile_stratified,64,28,47.55027096178691,Q2_20_40pct,0.6195978323057048,0.4,24.783913292228192,2,61.95978323057047,2,40.0,5
+A5,Packing-station roller motor,3,35,3,2,42,quintile_stratified,74,126,94.81409660307276,Q3_40_60pct,0.24148722717541793,0.5333333333333333,12.879318782688957,3,24.148722717541794,3,60.0,4
+A2,Sortation conveyor drive,5,80,5,4,42,quintile_stratified,47,135,121.81629897102604,Q4_60_80pct,0.025469608231791674,0.9333333333333333,2.377163434967223,4,2.5469608231791674,4,100.0,1
+A3,Vertical lift motor,4,55,4,4,42,quintile_stratified,39,142,172.98448712201755,Q5_longest_80_100pct,0.0,0.8,0.0,5,0.0,5,80.0,2

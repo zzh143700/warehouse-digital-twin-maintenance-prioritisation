@@ -1,0 +1,5 @@
+assignment_design,baseline,mean_spearman_rho,mean_kendall_tau,exact_rank_agreement_probability,top_rank_agreement_probability
+quintile_stratified,criticality_only,0.13253233407100254,0.10364190725597917,0.0,0.32
+quintile_stratified,rul_only,0.9505894736842104,0.9016444444444445,0.557,0.704
+unstratified_random,criticality_only,0.20390209937251594,0.17404201091880017,0.0,0.374
+unstratified_random,rul_only,0.8952426110320847,0.8297154297154297,0.456,0.681

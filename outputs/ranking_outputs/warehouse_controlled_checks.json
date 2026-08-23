@@ -1,0 +1,11 @@
+{
+  "weights_sum_to_one": true,
+  "urgency_nonincreasing_as_surrogate_rul_increases": true,
+  "equal_surrogate_rul_priority_follows_consequence": true,
+  "equal_consequence_priority_follows_shorter_surrogate_rul": true,
+  "component_dominance": {
+    "criticality": true,
+    "throughput": true,
+    "severity": true
+  }
+}

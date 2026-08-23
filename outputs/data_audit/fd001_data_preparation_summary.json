@@ -1,0 +1,38 @@
+{
+  "run_timestamp_local": "2026-08-23T19:17:18.526410",
+  "scope": "C-MAPSS FD001 data preparation and structural audit only",
+  "target_definition": "uncapped RUL = final training cycle by engine - current cycle",
+  "training_rows": 20631,
+  "training_engines": 100,
+  "test_rows": 13096,
+  "test_engines": 100,
+  "endpoint_labels": 100,
+  "missing_cells": 0,
+  "exact_duplicate_rows": 0,
+  "continuous_cycles": true,
+  "constant_training_predictors": [
+    "operational_setting_3",
+    "sensor_01",
+    "sensor_05",
+    "sensor_10",
+    "sensor_16",
+    "sensor_18",
+    "sensor_19"
+  ],
+  "source_hashes": {
+    "train_FD001.txt": "963b5e22825b34d8b21c69e1aeb4af3e647050eb672ee8834ba4b5d91d2de0f8",
+    "test_FD001.txt": "3cda7109ce17bafb5443f2ac926cfcf88154b941b8c4cf95eb55d1ddd6f52851",
+    "RUL_FD001.txt": "a19c8ec94931949d0485bdc35118206e9c81c4547b422efb9cf86f4ceddbceca"
+  },
+  "processed_hashes": {
+    "train_FD001_with_headers_and_rul.csv": "4a86551f5e1985f3c372c9fd3ebb9685bc416996f62c96370d94245ef940817b",
+    "test_FD001_with_headers.csv": "4d917f79d873151afea497a344ce11f39e67275177e34be519364625ad6136fb",
+    "RUL_FD001_with_unit_id.csv": "237b1822e6fd461b3ada4c781daba392a80ac5eb2334dea27f3dee24d7cb7738"
+  },
+  "software": {
+    "python": "3.13.9 (tags/v3.13.9:8183fa5, Oct 14 2025, 14:09:13) [MSC v.1944 64 bit (AMD64)]",
+    "platform": "Windows-11-10.0.26200-SP0",
+    "pandas": "2.3.3"
+  },
+  "interpretation_boundary": "These data describe simulated turbofan degradation and do not measure warehouse equipment."
+}

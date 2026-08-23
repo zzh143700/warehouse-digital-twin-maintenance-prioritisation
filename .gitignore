@@ -1,0 +1,19 @@
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.streamlit/secrets.toml
+*.log
+*.tmp
+*.inspect.ndjson
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+
+# Do not commit downloaded papers, extracted full text or a submitted dissertation PDF.
+*.pdf
+literature_pdfs/
+pdf_text_extracts/
+

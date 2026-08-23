@@ -1,0 +1,4 @@
+spearman_rho,kendall_tau,exact_rank_agreement,top_rank_agreement,reference_top,comparison_top,ablation_scheme
+0.9999999999999999,1.0,1,1,A1,A1,no_criticality
+0.9999999999999999,1.0,1,1,A1,A1,no_throughput
+0.9999999999999999,1.0,1,1,A1,A1,no_severity

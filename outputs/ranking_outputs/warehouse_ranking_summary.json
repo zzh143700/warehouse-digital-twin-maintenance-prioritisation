@@ -1,0 +1,167 @@
+{
+  "run_timestamp_local": "2026-08-23T19:27:23.718709",
+  "methodological_description": "digital-twin-inspired maintenance decision-support simulation",
+  "transfer_boundary": "C-MAPSS predictions are surrogate degradation inputs only and are not warehouse-asset RUL predictions",
+  "master_seed": 42,
+  "assignment_seed_sequence": {
+    "first": 42,
+    "last": 1041,
+    "repetitions": 1000
+  },
+  "assignment_design": "one C-MAPSS endpoint prediction sampled from each empirical quintile, then seeded permutation across five virtual assets",
+  "surrogate_rul_quantile_boundaries": {
+    "Q1_shortest_0_20pct": {
+      "lower_inclusive": 10.049433434661326,
+      "upper_inclusive": 39.01785215141656
+    },
+    "Q2_20_40pct": {
+      "lower_inclusive": 39.01785215141656,
+      "upper_inclusive": 69.28513397533273
+    },
+    "Q3_40_60pct": {
+      "lower_inclusive": 69.28513397533273,
+      "upper_inclusive": 99.06152738202255
+    },
+    "Q4_60_80pct": {
+      "lower_inclusive": 99.06152738202255,
+      "upper_inclusive": 135.57522637588096
+    },
+    "Q5_longest_80_100pct": {
+      "lower_inclusive": 135.57522637588096,
+      "upper_inclusive": 181.7937722618632
+    }
+  },
+  "assignment_design_sensitivity": [
+    {
+      "assignment_design": "quintile_stratified",
+      "baseline": "criticality_only",
+      "mean_spearman_rho": 0.13253233407100254,
+      "mean_kendall_tau": 0.10364190725597917,
+      "exact_rank_agreement_probability": 0.0,
+      "top_rank_agreement_probability": 0.32
+    },
+    {
+      "assignment_design": "quintile_stratified",
+      "baseline": "rul_only",
+      "mean_spearman_rho": 0.9505894736842104,
+      "mean_kendall_tau": 0.9016444444444445,
+      "exact_rank_agreement_probability": 0.557,
+      "top_rank_agreement_probability": 0.704
+    },
+    {
+      "assignment_design": "unstratified_random",
+      "baseline": "criticality_only",
+      "mean_spearman_rho": 0.20390209937251594,
+      "mean_kendall_tau": 0.17404201091880017,
+      "exact_rank_agreement_probability": 0.0,
+      "top_rank_agreement_probability": 0.374
+    },
+    {
+      "assignment_design": "unstratified_random",
+      "baseline": "rul_only",
+      "mean_spearman_rho": 0.8952426110320847,
+      "mean_kendall_tau": 0.8297154297154297,
+      "exact_rank_agreement_probability": 0.456,
+      "top_rank_agreement_probability": 0.681
+    }
+  ],
+  "base_horizon": 125.0,
+  "base_weights": {
+    "criticality": 0.3333333333333333,
+    "throughput": 0.3333333333333333,
+    "severity": 0.3333333333333333
+  },
+  "base_weights_sum": 1.0,
+  "base_source_unit_ids_in_asset_order": {
+    "A1": 24,
+    "A2": 47,
+    "A3": 39,
+    "A4": 64,
+    "A5": 74
+  },
+  "base_top_ranked_assets": [
+    "A1"
+  ],
+  "base_baseline_comparisons": {
+    "rul_only": {
+      "spearman_rho": 0.9999999999999999,
+      "kendall_tau": 1.0,
+      "exact_rank_agreement": 1,
+      "top_rank_agreement": 1,
+      "reference_top": "A1",
+      "comparison_top": "A1",
+      "repetition": 1,
+      "assignment_seed": 42,
+      "assignment_design": "quintile_stratified",
+      "baseline": "rul_only"
+    },
+    "criticality_only": {
+      "spearman_rho": -0.4103913408340617,
+      "kendall_tau": -0.31622776601683794,
+      "exact_rank_agreement": 0,
+      "top_rank_agreement": 0,
+      "reference_top": "A1",
+      "comparison_top": "A2",
+      "repetition": 1,
+      "assignment_seed": 42,
+      "assignment_design": "quintile_stratified",
+      "baseline": "criticality_only"
+    }
+  },
+  "seeded_assignment_rul_only_comparison": {
+    "mean_spearman_rho": 0.9505894736842104,
+    "mean_kendall_tau": 0.9016444444444446,
+    "exact_rank_agreement_probability": 0.557,
+    "top_rank_agreement_probability": 0.704
+  },
+  "seeded_assignment_criticality_only_comparison": {
+    "mean_spearman_rho": 0.13253233407100254,
+    "mean_kendall_tau": 0.10364190725597916,
+    "exact_rank_agreement_probability": 0.0,
+    "top_rank_agreement_probability": 0.32
+  },
+  "score_sensitivity_criterion": "each author-assigned score is moved one adjacent anchor down or up, bounded to the 1-5 scale",
+  "score_sensitivity_overall": {
+    "mean_spearman_rho": 0.9931943609022555,
+    "mean_kendall_tau": 0.986334126984127,
+    "exact_rank_agreement_probability": 0.9356071428571429,
+    "top_rank_agreement_probability": 0.9639642857142857
+  },
+  "noise_repetitions": 1000,
+  "noise_seed_sequence": {
+    "first": 100042,
+    "last": 101041
+  },
+  "noise_error_source": "centred Gradient Boosting grouped out-of-fold C-MAPSS prediction errors",
+  "noise_error_sd_cycles": 37.23897305793659,
+  "noise_rank_stability": {
+    "mean_spearman_rho": 0.8070557899025437,
+    "mean_kendall_tau": 0.7373663796375299,
+    "exact_rank_agreement_probability": 0.087,
+    "top_rank_agreement_probability": 0.802
+  },
+  "controlled_checks": {
+    "weights_sum_to_one": true,
+    "urgency_nonincreasing_as_surrogate_rul_increases": true,
+    "equal_surrogate_rul_priority_follows_consequence": true,
+    "equal_consequence_priority_follows_shorter_surrogate_rul": true,
+    "component_dominance": {
+      "criticality": true,
+      "throughput": true,
+      "severity": true
+    }
+  },
+  "software": {
+    "python": "3.13.9 (tags/v3.13.9:8183fa5, Oct 14 2025, 14:09:13) [MSC v.1944 64 bit (AMD64)]",
+    "platform": "Windows-11-10.0.26200-SP0",
+    "numpy": "2.3.5",
+    "pandas": "2.3.3",
+    "scipy": "1.16.3"
+  },
+  "input_hashes": {
+    "outputs\\model_outputs\\fd001_test_endpoint_predictions.csv": "f4bd19186b7d0d04ea83321fc2ecf8af74e9ea26438b95894a7cacdf37627757",
+    "outputs\\model_outputs\\selected_model_oof_predictions.csv": "9b4ca4398f9a9d463877709fe23cf6fc7c3504982a06f155c481ac3967105a76",
+    "docs\\warehouse_scenario_protocol.md": "97c6d36ec7c6cb46ff06b250067690245ad86f93a9bf2775ce0ddc5fc7be9724"
+  },
+  "script_sha256": "ff15bcb837fd21a98d0c285634f201d745ae004fc0ffb8208c386274d79092e2"
+}

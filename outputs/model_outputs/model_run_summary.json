@@ -1,0 +1,99 @@
+{
+  "run_timestamp_local": "2026-08-23T19:24:04.968056",
+  "random_seed": 42,
+  "grouped_cv_folds": 5,
+  "target": "uncapped RUL = maximum training cycle by engine - current cycle",
+  "retained_features": [
+    "cycle",
+    "operational_setting_1",
+    "operational_setting_2",
+    "sensor_02",
+    "sensor_03",
+    "sensor_04",
+    "sensor_06",
+    "sensor_07",
+    "sensor_08",
+    "sensor_09",
+    "sensor_11",
+    "sensor_12",
+    "sensor_13",
+    "sensor_14",
+    "sensor_15",
+    "sensor_17",
+    "sensor_20",
+    "sensor_21"
+  ],
+  "excluded_exact_constant_features": [
+    "operational_setting_3",
+    "sensor_01",
+    "sensor_05",
+    "sensor_10",
+    "sensor_16",
+    "sensor_18",
+    "sensor_19"
+  ],
+  "training_rows": 20631,
+  "training_engines": 100,
+  "test_endpoint_engines": 100,
+  "selection_rule": "lowest mean grouped-fold RMSE; mean MAE and candidate ID as tie-breakers",
+  "software": {
+    "python": "3.13.9 (tags/v3.13.9:8183fa5, Oct 14 2025, 14:09:13) [MSC v.1944 64 bit (AMD64)]",
+    "platform": "Windows-11-10.0.26200-SP0",
+    "numpy": "2.3.5",
+    "pandas": "2.3.3",
+    "scikit_learn": "1.9.0",
+    "joblib": "1.5.3"
+  },
+  "input_hashes": {
+    "input_data\\train_FD001_with_headers_and_rul.csv": "4a86551f5e1985f3c372c9fd3ebb9685bc416996f62c96370d94245ef940817b",
+    "input_data\\test_FD001_with_headers.csv": "4d917f79d873151afea497a344ce11f39e67275177e34be519364625ad6136fb",
+    "input_data\\RUL_FD001_with_unit_id.csv": "237b1822e6fd461b3ada4c781daba392a80ac5eb2334dea27f3dee24d7cb7738"
+  },
+  "models": {
+    "ridge": {
+      "selected_parameters": {
+        "alpha": 100.0
+      },
+      "cv_mean_fold_mae": 31.321245282295205,
+      "cv_sd_fold_mae": 3.5370915967097702,
+      "cv_mean_fold_rmse": 40.64001230373331,
+      "cv_sd_fold_rmse": 5.048375791580737,
+      "cv_pooled_oof_mae": 31.3278523364318,
+      "cv_pooled_oof_rmse": 40.91426118321523,
+      "test_endpoint_mae_raw": 25.930243634637087,
+      "test_endpoint_rmse_raw": 31.210845483597154,
+      "test_endpoint_mae_nonnegative": 25.667552692667773,
+      "test_endpoint_rmse_nonnegative": 30.943657468652294,
+      "negative_endpoint_predictions": 2,
+      "fit_seconds_full_training": 0.011248599970713258,
+      "mean_endpoint_inference_ms_for_100_rows": 0.6349344999762252,
+      "model_file": "outputs\\model_outputs\\models\\ridge_fd001.joblib",
+      "model_file_bytes": 1441,
+      "model_file_sha256": "7bcfa6b151a82d1f355d8bb319019fe1f46acda3adab1034edeae6fe75508f3b"
+    },
+    "gradient_boosting": {
+      "selected_parameters": {
+        "n_estimators": 100,
+        "learning_rate": 0.05,
+        "max_depth": 3,
+        "min_samples_leaf": 5
+      },
+      "cv_mean_fold_mae": 26.568858811807694,
+      "cv_sd_fold_mae": 2.570996581580379,
+      "cv_mean_fold_rmse": 37.000629727429676,
+      "cv_sd_fold_rmse": 4.225035545911737,
+      "cv_pooled_oof_mae": 26.599700890355074,
+      "cv_pooled_oof_rmse": 37.23840182675942,
+      "test_endpoint_mae_raw": 18.15798290999473,
+      "test_endpoint_rmse_raw": 24.86812748277897,
+      "test_endpoint_mae_nonnegative": 18.15798290999473,
+      "test_endpoint_rmse_nonnegative": 24.86812748277897,
+      "negative_endpoint_predictions": 0,
+      "fit_seconds_full_training": 4.879060800070874,
+      "mean_endpoint_inference_ms_for_100_rows": 0.608026499976404,
+      "model_file": "outputs\\model_outputs\\models\\gradient_boosting_fd001.joblib",
+      "model_file_bytes": 46149,
+      "model_file_sha256": "a8225cd70eb90a9fa85d4675f380229c1c2ec6078ad0fb9c7d4dbd6efd53d0dc"
+    }
+  }
+}
