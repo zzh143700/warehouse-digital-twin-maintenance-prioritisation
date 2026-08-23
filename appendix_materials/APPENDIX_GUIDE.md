@@ -15,7 +15,7 @@ The dissertation PDF should contain compact evidence needed to understand and as
 | Appendix E: Warehouse Scenario and Priority Index | Five virtual assets, score anchors, surrogate-input assignment, equations, planning horizon, weights and baselines | `docs/warehouse_scenario_protocol.md`; `outputs/ranking_outputs/warehouse_base_mapping_and_ranking.csv`; `warehouse_controlled_checks.json` | Prepared |
 | Appendix F: Sensitivity and Robustness Evidence | Compact summary of score, weight, horizon, assignment-design, ablation and prediction-noise tests | `outputs/ranking_outputs/*summary.csv`; detailed row files in the same directory; `warehouse_ranking_summary.json` | Prepared |
 | Appendix G: Interactive Dashboard | One interface screenshot, displayed outputs, user controls and non-live boundary | `dashboard/screenshots/`; `docs/DASHBOARD_SPEC.md`; `dashboard/streamlit_app.py`; `tests/test_dashboard_logic.py` | Prepared |
-| Appendix H: Reproducibility and Code Availability | Repository URL, immutable commit hash, software versions, commands, file inventory and verification result | `README.md`; `requirements.txt`; `run_all.ps1`; `run_dashboard.ps1`; `VERIFICATION.md`; `.github/workflows/verify.yml` | Add URL and commit after upload |
+| Appendix H: Reproducibility and Code Availability | Repository URL, immutable commit hash, software versions, commands, file inventory and verification result | `README.md`; `requirements.txt`; `run_all.ps1`; `run_dashboard.ps1`; `VERIFICATION.md`; `.github/workflows/verify.yml` | Prepared |
 
 ## Recommended compact appendix tables
 
@@ -36,7 +36,7 @@ The PDF appendices should include the following tables rather than pasting compl
 
 ## Ready-to-paste code-availability statement
 
-> The reproducibility package is available at [GitHub repository URL], archived at commit `[commit hash]`. It contains the data-integrity checks, RUL modelling scripts, prioritisation simulation, pinned dependencies, recorded seeds, generated summary outputs, Dashboard implementation and automated verification tests. The package uses C-MAPSS FD001 predictions only as surrogate degradation inputs after transfer to the conceptual warehouse scenario. Article PDFs and extracted full text are excluded for copyright compliance.
+> The reproducibility package is available at https://github.com/zzh143700/warehouse-digital-twin-maintenance-prioritisation, archived at commit `c574a1ea0ff1c6b8bea875d1186f8e04f4ad6788`. It contains the data-integrity checks, RUL modelling scripts, prioritisation simulation, pinned dependencies, recorded seeds, generated summary outputs, Dashboard implementation and automated verification tests. The package uses C-MAPSS FD001 predictions only as surrogate degradation inputs after transfer to the conceptual warehouse scenario. Article PDFs and extracted full text are excluded for copyright compliance.
 
 ## Ready-to-paste appendix note for large files
 
@@ -44,9 +44,8 @@ The PDF appendices should include the following tables rather than pasting compl
 
 ## Final checks before submission
 
-- Replace both placeholders in the code-availability statement with the final repository URL and commit hash.
+- Confirm that the cited repository URL and commit remain accessible to the intended examiner or supervisor.
 - Confirm whether the repository will remain private, be shared directly with the supervisor, or become public for examination.
 - If made public, confirm NASA FD001 redistribution terms or remove `source_data/` and provide download instructions plus hashes.
 - Keep the 80.2% leading-asset result together with the 8.7% complete-order result.
 - Do not describe repository verification as real-world warehouse validation.
-
