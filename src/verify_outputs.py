@@ -14,6 +14,7 @@ PACKAGE_ROOT = Path(__file__).resolve().parents[1]
 MODEL_DIR = PACKAGE_ROOT / "outputs" / "model_outputs"
 RANKING_DIR = PACKAGE_ROOT / "outputs" / "ranking_outputs"
 SCENARIO_CONFIG_PATH = PACKAGE_ROOT / "config" / "warehouse_scenario.json"
+SIMULATION_SCRIPT_PATH = PACKAGE_ROOT / "src" / "run_warehouse_priority_simulation.py"
 
 
 def load_json(path: Path) -> dict:
@@ -28,6 +29,22 @@ def sha256(path: Path) -> str:
         for chunk in iter(lambda: handle.read(1024 * 1024), b""):
             digest.update(chunk)
     return digest.hexdigest()
+
+
+def sha256_canonical_json(path: Path) -> str:
+    payload = json.loads(path.read_text(encoding="utf-8"))
+    canonical = json.dumps(
+        payload,
+        ensure_ascii=False,
+        sort_keys=True,
+        separators=(",", ":"),
+    ).encode("utf-8")
+    return hashlib.sha256(canonical).hexdigest()
+
+
+def sha256_normalized_text(path: Path) -> str:
+    content = path.read_text(encoding="utf-8").replace("\r\n", "\n").replace("\r", "\n")
+    return hashlib.sha256(content.encode("utf-8")).hexdigest()
 
 
 def all_boolean_checks_pass(value: object) -> bool:
@@ -81,7 +98,12 @@ def main() -> None:
             and len({asset["asset_id"] for asset in scenario["assets"]}) == 5
         ),
         "scenario configuration hash recorded": (
-            ranking["input_hashes"].get(scenario_key) == sha256(SCENARIO_CONFIG_PATH)
+            ranking["input_hashes"].get(scenario_key)
+            == sha256_canonical_json(SCENARIO_CONFIG_PATH)
+        ),
+        "simulation script hash recorded": (
+            ranking["script_sha256"]
+            == sha256_normalized_text(SIMULATION_SCRIPT_PATH)
         ),
     }
 

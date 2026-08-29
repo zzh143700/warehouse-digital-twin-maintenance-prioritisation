@@ -87,6 +87,22 @@ def sha256(path: Path) -> str:
     return digest.hexdigest()
 
 
+def sha256_canonical_json(path: Path) -> str:
+    payload = json.loads(path.read_text(encoding="utf-8"))
+    canonical = json.dumps(
+        payload,
+        ensure_ascii=False,
+        sort_keys=True,
+        separators=(",", ":"),
+    ).encode("utf-8")
+    return hashlib.sha256(canonical).hexdigest()
+
+
+def sha256_normalized_text(path: Path) -> str:
+    content = path.read_text(encoding="utf-8").replace("\r\n", "\n").replace("\r", "\n")
+    return hashlib.sha256(content.encode("utf-8")).hexdigest()
+
+
 def validate_weights(weights: dict[str, float]) -> None:
     if set(weights) != set(SCORE_DIMENSIONS):
         raise AssertionError("Unexpected weight dimensions")
@@ -762,11 +778,11 @@ def main() -> None:
         "input_hashes": {
             str(PREDICTION_PATH.relative_to(WORKSPACE)): sha256(PREDICTION_PATH),
             str(OOF_PATH.relative_to(WORKSPACE)): sha256(OOF_PATH),
-            str(SCENARIO_CONFIG_PATH.relative_to(WORKSPACE)): sha256(
+            str(SCENARIO_CONFIG_PATH.relative_to(WORKSPACE)): sha256_canonical_json(
                 SCENARIO_CONFIG_PATH
             ),
         },
-        "script_sha256": sha256(Path(__file__)),
+        "script_sha256": sha256_normalized_text(Path(__file__)),
     }
     with (OUTPUT_DIR / "warehouse_ranking_summary.json").open(
         "w", encoding="utf-8"
