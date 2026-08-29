@@ -2,9 +2,8 @@
 
 C-MAPSS FD001 predictions are evaluated as turbofan RUL predictions in the
 prognostic layer. In the warehouse layer their numerical values are used only
-as surrogate degradation inputs. They are not presented as warehouse-asset RUL
-predictions. Warehouse roles and 1-5 consequence scores are author-defined
-scenario parameters documented in ``docs/warehouse_scenario_protocol.md``.
+as surrogate degradation inputs. Warehouse roles, scores and sensitivity
+settings are loaded from ``config/warehouse_scenario.json``.
 """
 
 from __future__ import annotations
@@ -19,20 +18,6 @@ import numpy as np
 import pandas as pd
 import scipy
 
-
-MASTER_SEED = 42
-BASE_HORIZON = 125.0
-ASSIGNMENT_REPETITIONS = 1_000
-NOISE_REPETITIONS = 1_000
-QUANTILE_LABELS = [
-    "Q1_shortest_0_20pct",
-    "Q2_20_40pct",
-    "Q3_40_60pct",
-    "Q4_60_80pct",
-    "Q5_longest_80_100pct",
-]
-SCORE_DIMENSIONS = ("criticality", "throughput", "severity")
-
 WORKSPACE = Path(__file__).resolve().parents[1]
 RUN_DIR = WORKSPACE
 MODEL_OUTPUT_DIR = WORKSPACE / "outputs" / "model_outputs"
@@ -40,72 +25,58 @@ OUTPUT_DIR = WORKSPACE / "outputs" / "ranking_outputs"
 
 PREDICTION_PATH = MODEL_OUTPUT_DIR / "fd001_test_endpoint_predictions.csv"
 OOF_PATH = MODEL_OUTPUT_DIR / "selected_model_oof_predictions.csv"
-PROTOCOL_PATH = WORKSPACE / "docs" / "warehouse_scenario_protocol.md"
-SOURCE_PREDICTION_COLUMN = "gradient_boosting_prediction_nonnegative"
+SCENARIO_CONFIG_PATH = WORKSPACE / "config" / "warehouse_scenario.json"
+
+
+def load_scenario_config(path: Path) -> dict:
+    if not path.exists():
+        raise FileNotFoundError(f"Missing scenario configuration: {path}")
+    config = json.loads(path.read_text(encoding="utf-8"))
+    if config.get("schema_version") != "1.0":
+        raise AssertionError("Unsupported warehouse scenario schema")
+    return config
+
+
+SCENARIO_CONFIG = load_scenario_config(SCENARIO_CONFIG_PATH)
+SAMPLING_CONFIG = SCENARIO_CONFIG["sampling"]
+INDEX_CONFIG = SCENARIO_CONFIG["priority_index"]
+
+MASTER_SEED = int(SAMPLING_CONFIG["master_seed"])
+BASE_HORIZON = float(INDEX_CONFIG["base_horizon"])
+PLANNING_HORIZONS = tuple(float(value) for value in INDEX_CONFIG["planning_horizons"])
+ASSIGNMENT_REPETITIONS = int(SAMPLING_CONFIG["assignment_repetitions"])
+NOISE_REPETITIONS = int(SAMPLING_CONFIG["noise_repetitions"])
+NOISE_SEED_OFFSET = int(SAMPLING_CONFIG["noise_seed_offset"])
+QUANTILE_LABELS = list(SAMPLING_CONFIG["quantile_labels"])
+SOURCE_PREDICTION_COLUMN = SCENARIO_CONFIG["model_input"]["source_prediction_column"]
+SCORE_DIMENSIONS = ("criticality", "throughput", "severity")
 
 BASE_WEIGHTS = {
-    "criticality": 1.0 / 3.0,
-    "throughput": 1.0 / 3.0,
-    "severity": 1.0 / 3.0,
+    dimension: float(value)
+    for dimension, value in INDEX_CONFIG["base_weights"].items()
 }
-
 WEIGHT_SCHEMES = {
-    "equal": BASE_WEIGHTS,
-    "criticality_heavy": {"criticality": 0.50, "throughput": 0.25, "severity": 0.25},
-    "throughput_heavy": {"criticality": 0.25, "throughput": 0.50, "severity": 0.25},
-    "severity_heavy": {"criticality": 0.25, "throughput": 0.25, "severity": 0.50},
+    name: {dimension: float(value) for dimension, value in weights.items()}
+    for name, weights in INDEX_CONFIG["weight_schemes"].items()
 }
-
 ABLATION_SCHEMES = {
-    "no_criticality": {"criticality": 0.0, "throughput": 0.50, "severity": 0.50},
-    "no_throughput": {"criticality": 0.50, "throughput": 0.0, "severity": 0.50},
-    "no_severity": {"criticality": 0.50, "throughput": 0.50, "severity": 0.0},
+    name: {dimension: float(value) for dimension, value in weights.items()}
+    for name, weights in INDEX_CONFIG["ablation_schemes"].items()
 }
 
-ASSETS = pd.DataFrame(
-    [
-        {
-            "asset_id": "A1",
-            "asset_role": "Inbound conveyor motor",
-            "criticality": 4,
-            "capacity_loss_percent": 40,
-            "throughput": 3,
-            "severity": 3,
-        },
-        {
-            "asset_id": "A2",
-            "asset_role": "Sortation conveyor drive",
-            "criticality": 5,
-            "capacity_loss_percent": 80,
-            "throughput": 5,
-            "severity": 4,
-        },
-        {
-            "asset_id": "A3",
-            "asset_role": "Vertical lift motor",
-            "criticality": 4,
-            "capacity_loss_percent": 55,
-            "throughput": 4,
-            "severity": 4,
-        },
-        {
-            "asset_id": "A4",
-            "asset_role": "AGV/shuttle drive unit",
-            "criticality": 2,
-            "capacity_loss_percent": 15,
-            "throughput": 2,
-            "severity": 2,
-        },
-        {
-            "asset_id": "A5",
-            "asset_role": "Packing-station roller motor",
-            "criticality": 3,
-            "capacity_loss_percent": 35,
-            "throughput": 3,
-            "severity": 2,
-        },
-    ]
-)
+ASSET_RUNTIME_COLUMNS = [
+    "asset_id",
+    "asset_role",
+    "criticality",
+    "capacity_loss_percent",
+    "throughput",
+    "severity",
+]
+ASSETS = pd.DataFrame(SCENARIO_CONFIG["assets"])[ASSET_RUNTIME_COLUMNS]
+if len(ASSETS) != 5 or ASSETS["asset_id"].nunique() != 5:
+    raise AssertionError("Scenario configuration must contain five unique assets")
+if BASE_HORIZON not in PLANNING_HORIZONS:
+    raise AssertionError("Base horizon must be included in planning_horizons")
 
 
 def sha256(path: Path) -> str:
@@ -444,7 +415,7 @@ def run_seeded_assignments(
         )
 
         if include_parameter_and_score_sensitivity:
-            for horizon in (100.0, 125.0, 150.0):
+            for horizon in PLANNING_HORIZONS:
                 for scheme_name, weights in WEIGHT_SCHEMES.items():
                     alternative = score_assets(scenario, horizon=horizon, weights=weights)
                     sensitivity = rank_comparison(scored, alternative)
@@ -493,7 +464,7 @@ def monte_carlo_noise(
     comparison_rows: list[dict] = []
 
     for repetition in range(1, NOISE_REPETITIONS + 1):
-        seed = MASTER_SEED + 100_000 + repetition - 1
+        seed = MASTER_SEED + NOISE_SEED_OFFSET + repetition - 1
         rng = np.random.default_rng(seed)
         sampled_error = rng.choice(
             centred_prediction_errors, size=len(base_assignment), replace=True
@@ -559,7 +530,7 @@ def main() -> None:
 
     sensitivity_frames: list[pd.DataFrame] = []
     sensitivity_summary: list[dict] = []
-    for horizon in (100.0, 125.0, 150.0):
+    for horizon in PLANNING_HORIZONS:
         for scheme_name, weights in WEIGHT_SCHEMES.items():
             scored = score_assets(base_assignment, horizon=horizon, weights=weights)
             scored.insert(0, "weight_scheme", scheme_name)
@@ -772,8 +743,8 @@ def main() -> None:
         "score_sensitivity_overall": score_sensitivity_overall,
         "noise_repetitions": NOISE_REPETITIONS,
         "noise_seed_sequence": {
-            "first": MASTER_SEED + 100_000,
-            "last": MASTER_SEED + 100_000 + NOISE_REPETITIONS - 1,
+            "first": MASTER_SEED + NOISE_SEED_OFFSET,
+            "last": MASTER_SEED + NOISE_SEED_OFFSET + NOISE_REPETITIONS - 1,
         },
         "noise_error_source": (
             "centred Gradient Boosting grouped out-of-fold C-MAPSS prediction errors"
@@ -791,7 +762,9 @@ def main() -> None:
         "input_hashes": {
             str(PREDICTION_PATH.relative_to(WORKSPACE)): sha256(PREDICTION_PATH),
             str(OOF_PATH.relative_to(WORKSPACE)): sha256(OOF_PATH),
-            str(PROTOCOL_PATH.relative_to(WORKSPACE)): sha256(PROTOCOL_PATH),
+            str(SCENARIO_CONFIG_PATH.relative_to(WORKSPACE)): sha256(
+                SCENARIO_CONFIG_PATH
+            ),
         },
         "script_sha256": sha256(Path(__file__)),
     }
@@ -805,8 +778,8 @@ def main() -> None:
         "",
         (
             "Base specification: C-MAPSS predictions used only as surrogate degradation "
-            "inputs; one value from each empirical quintile; assignment seed 42; "
-            "H=125 abstract cycles; equal consequence weights."
+            "inputs; one value from each empirical quintile; assignment seed "
+            f"{MASTER_SEED}; H={BASE_HORIZON:g} abstract cycles; equal consequence weights."
         ),
         "",
         "## Base ranking",
@@ -860,9 +833,6 @@ def main() -> None:
                 "real-world warehouse risk or operational maintenance effectiveness."
             ),
         ]
-    )
-    (OUTPUT_DIR / "warehouse_results_summary.md").write_text(
-        "\n".join(readable) + "\n", encoding="utf-8"
     )
     print("\n".join(readable))
 

@@ -1,5 +1,5 @@
 {
-  "run_timestamp_local": "2026-08-23T19:24:04.968056",
+  "run_timestamp_local": "2026-08-29T17:48:34.474454",
   "random_seed": 42,
   "grouped_cv_folds": 5,
   "target": "uncapped RUL = maximum training cycle by engine - current cycle",
@@ -37,7 +37,7 @@
   "test_endpoint_engines": 100,
   "selection_rule": "lowest mean grouped-fold RMSE; mean MAE and candidate ID as tie-breakers",
   "software": {
-    "python": "3.13.9 (tags/v3.13.9:8183fa5, Oct 14 2025, 14:09:13) [MSC v.1944 64 bit (AMD64)]",
+    "python": "3.12.13 (main, Aug  7 2026, 02:26:41) [MSC v.1944 64 bit (AMD64)]",
     "platform": "Windows-11-10.0.26200-SP0",
     "numpy": "2.3.5",
     "pandas": "2.3.3",
@@ -65,8 +65,8 @@
       "test_endpoint_mae_nonnegative": 25.667552692667773,
       "test_endpoint_rmse_nonnegative": 30.943657468652294,
       "negative_endpoint_predictions": 2,
-      "fit_seconds_full_training": 0.011248599970713258,
-      "mean_endpoint_inference_ms_for_100_rows": 0.6349344999762252,
+      "fit_seconds_full_training": 0.010284599848091602,
+      "mean_endpoint_inference_ms_for_100_rows": 0.7008315005805343,
       "model_file": "outputs\\model_outputs\\models\\ridge_fd001.joblib",
       "model_file_bytes": 1441,
       "model_file_sha256": "7bcfa6b151a82d1f355d8bb319019fe1f46acda3adab1034edeae6fe75508f3b"
@@ -89,8 +89,8 @@
       "test_endpoint_mae_nonnegative": 18.15798290999473,
       "test_endpoint_rmse_nonnegative": 24.86812748277897,
       "negative_endpoint_predictions": 0,
-      "fit_seconds_full_training": 4.879060800070874,
-      "mean_endpoint_inference_ms_for_100_rows": 0.608026499976404,
+      "fit_seconds_full_training": 5.582628500182182,
+      "mean_endpoint_inference_ms_for_100_rows": 0.8255014999303967,
       "model_file": "outputs\\model_outputs\\models\\gradient_boosting_fd001.joblib",
       "model_file_bytes": 46149,
       "model_file_sha256": "a8225cd70eb90a9fa85d4675f380229c1c2ec6078ad0fb9c7d4dbd6efd53d0dc"

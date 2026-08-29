@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import sys
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 
 import altair as alt
@@ -186,7 +186,7 @@ top_rows = scored.loc[scored["asset_id"].isin(snapshot["top_assets"])]
 top_label = ", ".join(
     f"{row.asset_id} — {row.asset_role}" for row in top_rows.itertuples(index=False)
 )
-updated_at = datetime.now().astimezone().strftime("%d %b %Y, %H:%M:%S %Z")
+updated_at = datetime.now(timezone.utc).strftime("%d %b %Y, %H:%M:%S UTC")
 
 metric_columns = st.columns(3)
 metric_columns[0].metric("Current top-priority asset", ", ".join(snapshot["top_assets"]))

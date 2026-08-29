@@ -1,5 +1,5 @@
 {
-  "run_timestamp_local": "2026-08-23T19:27:23.718709",
+  "run_timestamp_local": "2026-08-29T17:52:16.189940",
   "methodological_description": "digital-twin-inspired maintenance decision-support simulation",
   "transfer_boundary": "C-MAPSS predictions are surrogate degradation inputs only and are not warehouse-asset RUL predictions",
   "master_seed": 42,
@@ -152,7 +152,7 @@
     }
   },
   "software": {
-    "python": "3.13.9 (tags/v3.13.9:8183fa5, Oct 14 2025, 14:09:13) [MSC v.1944 64 bit (AMD64)]",
+    "python": "3.12.13 (main, Aug  7 2026, 02:26:41) [MSC v.1944 64 bit (AMD64)]",
     "platform": "Windows-11-10.0.26200-SP0",
     "numpy": "2.3.5",
     "pandas": "2.3.3",
@@ -161,7 +161,7 @@
   "input_hashes": {
     "outputs\\model_outputs\\fd001_test_endpoint_predictions.csv": "f4bd19186b7d0d04ea83321fc2ecf8af74e9ea26438b95894a7cacdf37627757",
     "outputs\\model_outputs\\selected_model_oof_predictions.csv": "9b4ca4398f9a9d463877709fe23cf6fc7c3504982a06f155c481ac3967105a76",
-    "docs\\warehouse_scenario_protocol.md": "97c6d36ec7c6cb46ff06b250067690245ad86f93a9bf2775ce0ddc5fc7be9724"
+    "config\\warehouse_scenario.json": "0d049a04efd1655a998e5a8bec113bb5c67b0a40bdfd2e84f7bd600a39ad9293"
   },
-  "script_sha256": "ff15bcb837fd21a98d0c285634f201d745ae004fc0ffb8208c386274d79092e2"
+  "script_sha256": "b14ae495dcab914f97ec72a7b4692020e3ee8d93f569d22638b639ae963c5346"
 }

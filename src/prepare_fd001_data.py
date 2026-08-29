@@ -135,23 +135,6 @@ def main() -> None:
     (AUDIT_DIR / "fd001_data_preparation_summary.json").write_text(
         json.dumps(summary, indent=2, ensure_ascii=False) + "\n", encoding="utf-8"
     )
-    report = f"""# FD001 data-preparation check
-
-- Training data: {len(train):,} rows across {train['unit_id'].nunique()} engines.
-- Test data: {len(test):,} rows across {test['unit_id'].nunique()} engines.
-- Endpoint labels: {len(truth)}.
-- Missing cells: {summary['missing_cells']}.
-- Exact duplicate rows: {summary['exact_duplicate_rows']}.
-- Cycle continuity: PASS.
-- Uncapped target endpoint check: PASS.
-- Constant training predictors: {', '.join(constant_columns)}.
-
-The audit establishes structural suitability for C-MAPSS modelling only. It
-does not establish warehouse representativeness or warehouse RUL validity.
-"""
-    (AUDIT_DIR / "fd001_data_preparation_summary.md").write_text(
-        report, encoding="utf-8", newline="\n"
-    )
     print(json.dumps(summary, indent=2, ensure_ascii=False))
 
 

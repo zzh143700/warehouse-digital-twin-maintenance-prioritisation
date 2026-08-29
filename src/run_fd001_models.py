@@ -384,9 +384,6 @@ def main() -> None:
             "The endpoint metrics evaluate C-MAPSS FD001 only. They do not validate warehouse prognostics or maintenance decisions.",
         ]
     )
-    (OUTPUT_DIR / "model_results_summary.md").write_text(
-        "\n".join(readable) + "\n", encoding="utf-8"
-    )
     print("\n".join(readable))
 
 

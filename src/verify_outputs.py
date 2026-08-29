@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import hashlib
 import json
 import sys
 from pathlib import Path
@@ -12,12 +13,21 @@ import pandas as pd
 PACKAGE_ROOT = Path(__file__).resolve().parents[1]
 MODEL_DIR = PACKAGE_ROOT / "outputs" / "model_outputs"
 RANKING_DIR = PACKAGE_ROOT / "outputs" / "ranking_outputs"
+SCENARIO_CONFIG_PATH = PACKAGE_ROOT / "config" / "warehouse_scenario.json"
 
 
 def load_json(path: Path) -> dict:
     if not path.exists():
         raise FileNotFoundError(f"Missing required output: {path}")
     return json.loads(path.read_text(encoding="utf-8"))
+
+
+def sha256(path: Path) -> str:
+    digest = hashlib.sha256()
+    with path.open("rb") as handle:
+        for chunk in iter(lambda: handle.read(1024 * 1024), b""):
+            digest.update(chunk)
+    return digest.hexdigest()
 
 
 def all_boolean_checks_pass(value: object) -> bool:
@@ -31,6 +41,8 @@ def all_boolean_checks_pass(value: object) -> bool:
 def main() -> None:
     model = load_json(MODEL_DIR / "model_run_summary.json")
     ranking = load_json(RANKING_DIR / "warehouse_ranking_summary.json")
+    scenario = load_json(SCENARIO_CONFIG_PATH)
+    scenario_key = str(SCENARIO_CONFIG_PATH.relative_to(PACKAGE_ROOT))
 
     mapping = pd.read_csv(RANKING_DIR / "warehouse_mapping_monte_carlo_rows.csv")
     score_sensitivity = pd.read_csv(
@@ -63,6 +75,13 @@ def main() -> None:
         ),
         "surrogate-only transfer boundary recorded": (
             "surrogate degradation inputs" in ranking["transfer_boundary"]
+        ),
+        "machine-readable scenario has five assets": (
+            len(scenario["assets"]) == 5
+            and len({asset["asset_id"] for asset in scenario["assets"]}) == 5
+        ),
+        "scenario configuration hash recorded": (
+            ranking["input_hashes"].get(scenario_key) == sha256(SCENARIO_CONFIG_PATH)
         ),
     }
 

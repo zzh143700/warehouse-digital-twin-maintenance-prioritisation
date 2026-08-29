@@ -1,0 +1,192 @@
+{
+  "schema_version": "1.0",
+  "protocol_metadata": {
+    "initial_specification_date": "2026-07-20",
+    "supervisor_confirmed_revision_date": "2026-08-04",
+    "status": "revised_proof_of_concept"
+  },
+  "transfer_boundary": {
+    "study_type": "digital-twin-inspired maintenance decision-support simulation",
+    "source_domain": "NASA C-MAPSS FD001 simulated turbofan degradation",
+    "warehouse_use": "C-MAPSS endpoint predictions are used only as controlled surrogate degradation inputs",
+    "excluded_interpretations": [
+      "live digital twin",
+      "warehouse case study",
+      "warehouse-asset RUL prediction",
+      "operational maintenance intervention"
+    ]
+  },
+  "model_input": {
+    "source_prediction_column": "gradient_boosting_prediction_nonnegative",
+    "expected_endpoint_predictions": 100
+  },
+  "sampling": {
+    "master_seed": 42,
+    "assignment_repetitions": 1000,
+    "noise_repetitions": 1000,
+    "noise_seed_offset": 100000,
+    "quantile_labels": [
+      "Q1_shortest_0_20pct",
+      "Q2_20_40pct",
+      "Q3_40_60pct",
+      "Q4_60_80pct",
+      "Q5_longest_80_100pct"
+    ],
+    "base_design": "sample one endpoint prediction from each empirical quintile and permute the five values across A1-A5",
+    "alternative_design": "sample five endpoint predictions without replacement",
+    "negative_noise_policy": "clip perturbed surrogate inputs to zero"
+  },
+  "priority_index": {
+    "formulas": {
+      "urgency": "clip(1 - surrogate_rul_input / planning_horizon, 0, 1)",
+      "consequence": "criticality_weight * criticality / 5 + throughput_weight * throughput / 5 + severity_weight * severity / 5",
+      "priority": "100 * urgency * consequence",
+      "rul_only_baseline": "100 * urgency",
+      "criticality_only_baseline": "20 * criticality"
+    },
+    "base_horizon": 125.0,
+    "planning_horizons": [100.0, 125.0, 150.0],
+    "base_weights": {
+      "criticality": 0.3333333333333333,
+      "throughput": 0.3333333333333333,
+      "severity": 0.3333333333333333
+    },
+    "weight_schemes": {
+      "equal": {
+        "criticality": 0.3333333333333333,
+        "throughput": 0.3333333333333333,
+        "severity": 0.3333333333333333
+      },
+      "criticality_heavy": {
+        "criticality": 0.5,
+        "throughput": 0.25,
+        "severity": 0.25
+      },
+      "throughput_heavy": {
+        "criticality": 0.25,
+        "throughput": 0.5,
+        "severity": 0.25
+      },
+      "severity_heavy": {
+        "criticality": 0.25,
+        "throughput": 0.25,
+        "severity": 0.5
+      }
+    },
+    "ablation_schemes": {
+      "no_criticality": {
+        "criticality": 0.0,
+        "throughput": 0.5,
+        "severity": 0.5
+      },
+      "no_throughput": {
+        "criticality": 0.5,
+        "throughput": 0.0,
+        "severity": 0.5
+      },
+      "no_severity": {
+        "criticality": 0.5,
+        "throughput": 0.5,
+        "severity": 0.0
+      }
+    }
+  },
+  "assets": [
+    {
+      "asset_id": "A1",
+      "asset_role": "Inbound conveyor motor",
+      "configuration_criterion": "Important inbound path with short buffering and a limited temporary workaround",
+      "criticality": 4,
+      "criticality_justification": "Major process dependency, but limited short-term continuity remains",
+      "capacity_loss_percent": 40,
+      "throughput": 3,
+      "severity": 3,
+      "severity_justification": "Moderate disruption and recovery exposure without a severe safety or continuity assumption"
+    },
+    {
+      "asset_id": "A2",
+      "asset_role": "Sortation conveyor drive",
+      "configuration_criterion": "Main sortation route with no full-capacity bypass",
+      "criticality": 5,
+      "criticality_justification": "System-critical route with no effective substitute",
+      "capacity_loss_percent": 80,
+      "throughput": 5,
+      "severity": 4,
+      "severity_justification": "Serious service and business-continuity exposure, but not the maximum catastrophic category"
+    },
+    {
+      "asset_id": "A3",
+      "asset_role": "Vertical lift motor",
+      "configuration_criterion": "Limited vertical redundancy and difficult recovery",
+      "criticality": 4,
+      "criticality_justification": "Major process dependency with restricted redundancy",
+      "capacity_loss_percent": 55,
+      "throughput": 4,
+      "severity": 4,
+      "severity_justification": "Difficult recovery and serious service or damage exposure"
+    },
+    {
+      "asset_id": "A4",
+      "asset_role": "AGV/shuttle drive unit",
+      "configuration_criterion": "One unit within a multi-vehicle fleet; workload can be redistributed",
+      "criticality": 2,
+      "criticality_justification": "Strong fleet redundancy limits the interruption",
+      "capacity_loss_percent": 15,
+      "throughput": 2,
+      "severity": 2,
+      "severity_justification": "Minor local service and recovery effect"
+    },
+    {
+      "asset_id": "A5",
+      "asset_role": "Packing-station roller motor",
+      "configuration_criterion": "One of two packing paths; partial capacity remains available",
+      "criticality": 3,
+      "criticality_justification": "An important process is affected, but a workable alternative remains",
+      "capacity_loss_percent": 35,
+      "throughput": 3,
+      "severity": 2,
+      "severity_justification": "Partial capacity remains and the assumed non-throughput effect is minor"
+    }
+  ],
+  "score_criteria": {
+    "criticality": {
+      "1": "local auxiliary role with an immediately available substitute",
+      "2": "minor local interruption with strong redundancy",
+      "3": "one important process is affected, but a workable alternative exists",
+      "4": "major process dependency with limited redundancy or difficult recovery",
+      "5": "system-critical single point of failure with no effective substitute"
+    },
+    "throughput_capacity_loss_percent": {
+      "1": "less than 10",
+      "2": "10-24",
+      "3": "25-49",
+      "4": "50-74",
+      "5": "75 or more"
+    },
+    "severity": {
+      "1": "negligible non-throughput effect and straightforward recovery",
+      "2": "minor damage, service or cost effect",
+      "3": "moderate disruption or recovery requirement",
+      "4": "serious safety, damage, service, recovery or cost exposure",
+      "5": "severe safety, regulatory, damage or business-continuity consequence"
+    },
+    "adjacent_score_test": "move each author-assigned score one anchor down or up where feasible, bounded to 1-5"
+  },
+  "interpretation_limits": {
+    "supported": [
+      "stated predictive performance on C-MAPSS FD001",
+      "predeclared mathematical behaviour of the priority index",
+      "measured internal stability or sensitivity under controlled changes",
+      "ranking changes produced by the declared warehouse scenario variables"
+    ],
+    "not_supported": [
+      "warehouse-asset RUL accuracy",
+      "observed warehouse risk",
+      "real-world ranking validity",
+      "realised throughput improvement",
+      "cost savings",
+      "an optimal maintenance schedule",
+      "operational effectiveness"
+    ]
+  }
+}

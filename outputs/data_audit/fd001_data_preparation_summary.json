@@ -1,5 +1,5 @@
 {
-  "run_timestamp_local": "2026-08-23T19:17:18.526410",
+  "run_timestamp_local": "2026-08-29T17:41:06.224648",
   "scope": "C-MAPSS FD001 data preparation and structural audit only",
   "target_definition": "uncapped RUL = final training cycle by engine - current cycle",
   "training_rows": 20631,
@@ -30,7 +30,7 @@
     "RUL_FD001_with_unit_id.csv": "237b1822e6fd461b3ada4c781daba392a80ac5eb2334dea27f3dee24d7cb7738"
   },
   "software": {
-    "python": "3.13.9 (tags/v3.13.9:8183fa5, Oct 14 2025, 14:09:13) [MSC v.1944 64 bit (AMD64)]",
+    "python": "3.12.13 (main, Aug  7 2026, 02:26:41) [MSC v.1944 64 bit (AMD64)]",
     "platform": "Windows-11-10.0.26200-SP0",
     "pandas": "2.3.3"
   },
